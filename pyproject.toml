@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "disasternexus"
+version = "1.0.0"
+description = "Unified multimodal framework for bitemporal disaster understanding"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "torch>=2.1.0",
+    "transformers>=4.49.0",
+    "peft>=0.14.0",
+    "pyyaml>=6.0",
+    "pillow>=10.0.0",
+    "numpy>=1.24.0",
+]
+
+[tool.setuptools.packages.find]
+include = ["disasternexus*"]

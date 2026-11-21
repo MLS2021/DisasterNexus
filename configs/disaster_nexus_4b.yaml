@@ -1,0 +1,85 @@
+model:
+  qwen_model_name_or_path: Qwen/Qwen3-VL-4B-Instruct
+  semantic_image_size: 512
+  spatial_image_size: 1024
+  lora:
+    r: 8
+    alpha: 16
+    dropout: 0.05
+    target_modules: ["q_proj", "v_proj"]
+  spatial_backbone:
+    type: swin_b
+    freeze: true
+    out_channels: [128, 256, 512, 1024]
+    out_strides: [4, 8, 16, 32]
+    pretrained_weights: null
+  bitemporal_fusion:
+    adapter_channels: 128
+    modalities: ["optical", "sar"]
+  pixel_decoder:
+    conv_dim: 256
+    mask_dim: 256
+    num_heads: 8
+    dim_feedforward: 1024
+    num_encoder_layers: 6
+    in_features: ["res3", "res4", "res5"]
+  mask_decoder:
+    hidden_dim: 256
+    mask_dim: 256
+    num_queries: 32
+    num_heads: 8
+    dim_feedforward: 2048
+    num_decoder_layers: 9
+    selector_temperature: 16.0
+  option_heads:
+    tasks:
+      - Disaster Type Recognition
+      - Disaster Scene Recognition
+      - Disaster Bearing Bodies Recognition
+    hidden_dim: 256
+
+data:
+  data_root: data/DisasterM3
+  train_manifest: data/manifests/disasterm3_train_event_split.jsonl
+  train_refseg_manifest: data/manifests/disasterm3_train_refseg.jsonl
+  val_refseg_manifest: data/manifests/disasterm3_val_refseg.jsonl
+  bench_manifest: data/manifests/disasterm3_bench.jsonl
+  event_split_val_fraction: 0.15
+  seed: 42
+
+training:
+  output_dir: outputs/disaster_nexus_4b
+  precision: bf16
+  micro_batch_size: 2
+  gradient_accumulation_prefix: 4
+  gradient_accumulation_main: 8
+  weight_decay: 0.01
+  max_grad_norm: 1.0
+  prefix_steps: 1000
+  main_virtual_epochs: 3
+  continuation_steps: 1000
+  lr:
+    prefix:
+      lora: 2.0e-5
+      lm_head: 1.0e-5
+      segmentation: 1.0e-4
+      option_heads: 1.0e-4
+    main:
+      lora: 1.0e-5
+      lm_head: 5.0e-6
+      segmentation: 1.0e-4
+      option_heads: 1.0e-4
+    continuation:
+      lora: 1.0e-5
+      lm_head: 5.0e-6
+  losses:
+    bce_weight: 5.0
+    dice_weight: 5.0
+    query_ce_weight: 1.0
+    attention_weight: 0.01
+    option_head_weight: 1.0
+
+evaluation:
+  mask_threshold: 0.3
+  max_new_tokens_qa: 64
+  max_new_tokens_longform: 2048
