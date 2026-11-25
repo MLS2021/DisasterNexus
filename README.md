@@ -39,6 +39,18 @@ pip install -r requirements.txt
 pip install -e .
 ```
 
+## Dataset
+
+DisasterNexus is trained and evaluated on the public **DisasterM3** dataset:
+
+- **Paper**: *DisasterM3: A Remote Sensing Vision-Language Dataset for Disaster Damage Assessment and Response* (Wang et al., *NeurIPS Datasets and Benchmarks Track*, 2025, DOI: `10.52202/085713-5398`)
+- **Paper Link**: https://proceedings.neurips.cc/paper_files/paper/2025/hash/ec80d18205e39d42a27192d5f3ddd688-Abstract-Datasets_and_Benchmarks_Track.html
+- **Splits Used**:
+  - **Training (`DisasterM3 Instruct`)**: 87,387 training records across all nine tasks (31,623 referring-segmentation instructions after an event-based split of 37,204 records with 5,581 held out for validation, plus 55,764 language-task records).
+  - **Evaluation (`DisasterM3 Bench`)**: 30,026 evaluation records covering six short-answer tasks, referring segmentation, disaster report generation, and restoration advice generation across both Optical--Optical and Optical--SAR pairs.
+
+Download the official DisasterM3 Instruct and Bench releases and place them under `data/DisasterM3` (or update `data.data_root` and the manifest paths in `configs/disaster_nexus_4b.yaml` / `configs/disaster_nexus_8b.yaml`).
+
 ## Usage
 
 ### 1. Training
